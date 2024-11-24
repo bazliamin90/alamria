@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alam Ria</title>
+  <style>
+    body {
+		overflow-y: scroll;
+		background-color: #E6E6FA;
+		margin: 0;
+		font-size: 16px;
+		font-family: Arial, sans-serif;
+		color: #555;
+		height: 90vh;
+    }
+
+    main {
+		margin: 0 auto;
+		max-width: 50rem;
+		width: 95%;
+		margin-bottom: 200px;
+    }
+
+	h3 {
+		display: flex;
+		justify-content: center; /* Centers content horizontally */
+		align-items: center; /* Centers content vertically */
+	}
+
+	#controls {
+		display: flex;
+		justify-content: center; /* Centers content horizontally */
+		align-items: center; /* Centers content vertically */
+		gap: 20px;
+		margin: 0 0 20px 0;
+	}
+	
+	#controls button {
+		font-size: 10px;
+		padding: 5px 7px 2px 7px;
+	}
+	
+	#controls img {
+		height: 10px;
+	}
+
+	.container {
+		background-color: #333;
+		overflow: auto;
+		white-space: nowrap;
+		border: 1px solid blue;
+		padding: 10px;
+		margin: 0 auto;
+	}
+
+	.container img {
+		padding: 10px;
+		width: 100px;
+	}
+	
+	.viewer {
+		background-color: #333;
+		height: 50vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: auto;
+		white-space: nowrap;
+		border: 1px solid blue;
+		padding: 10px;
+		margin: 20px auto;
+	}
+	
+	.viewer img {
+		max-width: 100%; /* Prevent image from exceeding container width */
+		max-height: 100%; /* Prevent image from exceeding container height */
+		width: auto;
+		height: auto;
+		transition: transform 0.25s ease; /* Smooth transition for zoom effect */
+		transform-origin: top left;
+	}
+	
+	@media (max-width: 600px) {
+		body {
+			font-size: 12px;
+		}
+	  
+		main {
+			width: 90vw;
+		}
+
+		.container img {
+			width: 50px; /* Reduce thumbnail size for smaller screens */
+		}
+	}
+  </style>
+</head>
+<body>
+  <main>
+    
+	<h3>Alam Ria PASTI Kebangsaan 2024</h3>
+	
+	<div class="viewer">
+		<img id="displayedImage" src="001.jpeg" alt="Displayed Image">
+	</div>
+	
+	<div id="controls">
+		<button id="prevBtn"><img src="prev.svg" alt="previous"></button>
+		<button id="nextBtn"><img src="next.svg" alt="next"></button>
+		<button id="zoomInBtn"><img src="zoomin.svg" alt="zoom in"></button>
+		<button id="zoomOutBtn"><img src="zoomout.svg" alt="zoom out"></button>
+	</div>
+	
+	<div class="container">
+      <img src="https://github.com/bazliamin90/img/blob/main/alamria/001.jpeg?raw=true" alt="Image 1">
+      <img src="https://github.com/bazliamin90/img/blob/main/alamria/002.jpeg?raw=true" alt="Image 2">
+      <img src="https://github.com/bazliamin90/img/blob/main/alamria/003.jpeg?raw=true" alt="Image 3">
+      <img src="https://github.com/bazliamin90/img/blob/main/alamria/004.jpeg?raw=true" alt="Image 4">
+      <img src="https://github.com/bazliamin90/img/blob/main/alamria/005.jpeg?raw=true" alt="Image 5">
+      <img src="https://github.com/bazliamin90/img/blob/main/alamria/006.jpeg?raw=true" alt="Image 6">
+      <img src="https://github.com/bazliamin90/img/blob/main/alamria/007.jpeg?raw=true" alt="Image 7">
+      <img src="https://github.com/bazliamin90/img/blob/main/alamria/008.jpeg?raw=true" alt="Image 8">
+    </div>
+  </main>
+  
+<script>
+  const images = 
+  ["https://github.com/bazliamin90/img/blob/main/alamria/001.jpeg?raw=true", 
+  "https://github.com/bazliamin90/img/blob/main/alamria/002.jpeg?raw=true",
+  "https://github.com/bazliamin90/img/blob/main/alamria/003.jpeg?raw=true",
+  "https://github.com/bazliamin90/img/blob/main/alamria/004.jpeg?raw=true", 
+  "https://github.com/bazliamin90/img/blob/main/alamria/005.jpeg?raw=true", 
+  "https://github.com/bazliamin90/img/blob/main/alamria/006.jpeg?raw=true", 
+  "https://github.com/bazliamin90/img/blob/main/alamria/007.jpeg?raw=true", 
+  "https://github.com/bazliamin90/img/blob/main/alamria/008.jpeg?raw=true"];
+  let currentIndex = 0;
+
+  const displayedImage = document.getElementById("displayedImage");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+
+  // Update displayed image based on the current index
+  function updateImage() {
+    displayedImage.src = images[currentIndex];
+  }
+
+  // Event listeners for buttons
+  prevBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + images.length) % images.length; // Loop back to last image
+    updateImage();
+  });
+
+  nextBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % images.length; // Loop back to first image
+    updateImage();
+  });
+  
+  // Add click event listeners to images in the container
+const thumbnails = document.querySelectorAll(".container img");
+
+thumbnails.forEach((thumbnail, index) => {
+  thumbnail.addEventListener("click", () => {
+    currentIndex = index; // Update currentIndex to the clicked image's index
+    updateImage(); // Update the viewer to display the clicked image
+  });
+});
+let zoomLevel = 1; // Initial zoom level
+const zoomStep = 0.5; // How much to zoom in/out on each button click
+const maxScale = 3; // Maximum zoom level
+const minScale = 1; // Minimum zoom level (original size)
+
+// Function to update the zoom level
+function updateZoom() {
+  // Ensure the zoom level is within the defined limits
+  if (zoomLevel > maxScale) {
+    zoomLevel = maxScale;
+  } else if (zoomLevel < minScale) {
+    zoomLevel = minScale;
+  }
+
+  displayedImage.style.transform = `scale(${zoomLevel})`; // Apply zoom effect
+}
+
+// Zoom In functionality
+const zoomInBtn = document.getElementById('zoomInBtn');
+zoomInBtn.addEventListener('click', () => {
+  zoomLevel += zoomStep; // Increase zoom level
+  updateZoom(); // Apply zoom effect
+});
+
+// Zoom Out functionality
+const zoomOutBtn = document.getElementById('zoomOutBtn');
+zoomOutBtn.addEventListener('click', () => {
+  if (zoomLevel > minScale) {
+    zoomLevel -= zoomStep; // Decrease zoom level
+    updateZoom(); // Apply zoom effect
+  }
+});
+
+// Reset zoom when clicking outside of the image
+document.addEventListener("click", (event) => {
+  if (!displayedImage.contains(event.target) && !document.getElementById('controls').contains(event.target)) {
+    zoomLevel = 1; // Reset to original size
+    updateZoom(); // Apply zoom effect to reset the zoom
+  }
+});
+
+</script>
+  
+</body>
+</html>
